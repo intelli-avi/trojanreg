@@ -649,7 +649,7 @@ export default function App() {
             Thank you for shortlisting me
           </div>
           <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:800, fontSize:52, lineHeight:1.1, color:"#fff", marginBottom:20 }}>
-            Hi, Profs. Vishal<br />&amp; Javanmard.
+            Hi, Profs. Gupta<br />&amp; Javanmard.
           </div>
           <div style={{ fontFamily:"'Playfair Display',serif", fontStyle:"italic", fontSize:22, color:"rgba(255,255,255,0.6)", marginBottom:32 }}>
             Let's get into this.
