@@ -7,7 +7,6 @@ const CREAM    = "#faf7f2";
 const WHITE    = "#ffffff";
 const NEAR_BLACK = "#111111";
 
-// ── Scroll animation hook ─────────────────────────────────────────────────────
 function useFadeIn(threshold = 0.1) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -34,11 +33,10 @@ function FadeIn({ children, delay = 0, style = {} }) {
   );
 }
 
-// ── Shared small components ───────────────────────────────────────────────────
 function Bar({ pct, color = C }) {
   return (
     <div style={{ background: "#e5e5e5", borderRadius: 4, height: 5, width: "100%" }}>
-      <div style={{ width: `${pct}%`, background: color, height: 5, borderRadius: 4, transition: "width 1.4s ease" }} />
+      <div style={{ width: `${pct}%`, background: color, height: 5, borderRadius: 4 }} />
     </div>
   );
 }
@@ -59,7 +57,6 @@ function StatusBadge({ s }) {
 }
 function Divider() { return <div style={{ height: 1, background: "#e8e2d9" }} />; }
 
-// ── Difficulty badge ──────────────────────────────────────────────────────────
 function DifficultyBadge({ level, phase }) {
   const styles = {
     "Very Easy": { bg: "#e6f4ea", color: "#1a7a3a", dot: "#22c55e" },
@@ -77,14 +74,32 @@ function DifficultyBadge({ level, phase }) {
   );
 }
 
-// ── Section block ─────────────────────────────────────────────────────────────
-function SectionBlock({ number, title, difficulty, phase, problem, approach, integration, children, bg = WHITE }) {
+// ── Mini tech block shown at the bottom of each section ───────────────────────
+function MiniTech({ items }) {
+  return (
+    <div style={{ marginTop: 28, borderTop: "1px solid #e8e2d9", paddingTop: 24 }}>
+      <div style={{ fontSize: 10, fontWeight: 700, color: "#bbb", letterSpacing: 2, textTransform: "uppercase", marginBottom: 14 }}>Technical Architecture</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {items.map(({ label, tech, note }) => (
+          <div key={label} style={{ display: "flex", gap: 14, alignItems: "flex-start", background: "#f9f7f4", border: "1px solid #ede8e0", borderRadius: 10, padding: "12px 16px" }}>
+            <div style={{ minWidth: 130, fontSize: 11, fontWeight: 700, color: "#999", textTransform: "uppercase", letterSpacing: .5, paddingTop: 1 }}>{label}</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: "monospace", fontSize: 12, color: C, fontWeight: 700, marginBottom: 3 }}>{tech}</div>
+              <div style={{ fontSize: 12, color: "#777", lineHeight: 1.6 }}>{note}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SectionBlock({ number, title, difficulty, phase, problem, approach, integration, miniTech, children, bg = WHITE }) {
   return (
     <section style={{ background: bg, padding: "80px 0" }}>
       <div style={{ maxWidth: 820, margin: "0 auto", padding: "0 28px" }}>
 
         <FadeIn>
-          {/* Fixed alignment: items center so circle and title sit on the same midline */}
           <div style={{ display: "flex", alignItems: "center", gap: 18, marginBottom: 14 }}>
             <div style={{
               background: C, color: "#fff",
@@ -126,12 +141,16 @@ function SectionBlock({ number, title, difficulty, phase, problem, approach, int
           </div>
         </FadeIn>
 
+        <FadeIn delay={220}>
+          <MiniTech items={miniTech} />
+        </FadeIn>
+
       </div>
     </section>
   );
 }
 
-// ── STARS data ────────────────────────────────────────────────────────────────
+// ── Data ──────────────────────────────────────────────────────────────────────
 const STUDENT = {
   name: "Avi Chopra", id: "6072838601",
   degree: "BS – Artificial Intelligence for Business",
@@ -175,65 +194,65 @@ const REQUIREMENTS = [
   { label:"Accounting Requirement",             status:"partial", detail:"BUAD280 complete; BUAD281 in progress", pct:75 },
 ];
 const EXAMS = [
-  { code:"ECON352", title:"Macroeconomics for Business",        days:"MWF · 10:00 AM", examDay:"Mon, May 11", examTime:"8:00–10:00 AM", rule:"10 AM MWF rule" },
-  { code:"TAC 259", title:"Basics of Artificial Intelligence",  days:"TTh · 2:00 PM",  examDay:"Thu, May 7",  examTime:"2:00–4:00 PM",  rule:"1:30–2:30 PM TTh rule" },
-  { code:"BUAD281", title:"Intro to Managerial Accounting",     days:"—",              examDay:"Sat, May 9",  examTime:"11 AM–1:00 PM", rule:"Published exception", exception: true },
-  { code:"DSO 488", title:"Hands-on AI for Business",          days:"TTh · 11:00 AM", examDay:"Tue, May 12", examTime:"11 AM–1:00 PM", rule:"11 AM TTh rule" },
-  { code:"BUAD104", title:"Intl. Business (once-weekly)",       days:"W · 4:00 PM+",   examDay:"—",           examTime:"First class period during finals week", rule:"Once-weekly after 4 PM", noExam: true },
+  { code:"ECON352", title:"Macroeconomics for Business",       days:"MWF · 10:00 AM", examDay:"Mon, May 11", examTime:"8:00–10:00 AM", rule:"10 AM MWF rule" },
+  { code:"TAC 259", title:"Basics of Artificial Intelligence", days:"TTh · 2:00 PM",  examDay:"Thu, May 7",  examTime:"2:00–4:00 PM",  rule:"1:30–2:30 PM TTh rule" },
+  { code:"BUAD281", title:"Intro to Managerial Accounting",    days:"—",              examDay:"Sat, May 9",  examTime:"11 AM–1:00 PM", rule:"Published exception", exception: true },
+  { code:"DSO 488", title:"Hands-on AI for Business",         days:"TTh · 11:00 AM", examDay:"Tue, May 12", examTime:"11 AM–1:00 PM", rule:"11 AM TTh rule" },
+  { code:"BUAD104", title:"Intl. Business (once-weekly)",      days:"W · 4:00 PM+",   examDay:"—",           examTime:"First class period during finals week", rule:"Once-weekly after 4 PM", noExam: true },
 ];
 
-// ── Prototype 1: STARS ────────────────────────────────────────────────────────
+// ── Prototypes ────────────────────────────────────────────────────────────────
 function StarsPrototype() {
   const pct = Math.round(((STUDENT.unitsEarned + STUDENT.unitsInProgress) / STUDENT.unitsTotal) * 100);
   return (
     <div>
-      <div style={{ background: `linear-gradient(135deg,${C},${DARK_C})`, borderRadius: 14, padding: "22px 28px", color: "#fff", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16 }}>
+      <div style={{ background:`linear-gradient(135deg,${C},${DARK_C})`, borderRadius:14, padding:"22px 28px", color:"#fff", marginBottom:14, display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:16 }}>
         <div>
-          <div style={{ fontSize: 10, opacity: .55, letterSpacing: 2, textTransform: "uppercase", marginBottom: 5 }}>Parsed from STARS · April 13, 2026</div>
-          <div style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 22 }}>{STUDENT.name}</div>
-          <div style={{ fontSize: 13, opacity: .8, marginTop: 2 }}>{STUDENT.degree}</div>
-          <div style={{ fontSize: 11, opacity: .5, marginTop: 2 }}>ID {STUDENT.id} · {STUDENT.level} · Expected May 2027</div>
+          <div style={{ fontSize:10, opacity:.55, letterSpacing:2, textTransform:"uppercase", marginBottom:5 }}>Parsed from STARS · April 13, 2026</div>
+          <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, fontSize:22 }}>{STUDENT.name}</div>
+          <div style={{ fontSize:13, opacity:.8, marginTop:2 }}>{STUDENT.degree}</div>
+          <div style={{ fontSize:11, opacity:.5, marginTop:2 }}>ID {STUDENT.id} · {STUDENT.level} · Expected May 2027</div>
         </div>
-        <div style={{ display: "flex", gap: 22 }}>
+        <div style={{ display:"flex", gap:22 }}>
           {[["GPA",STUDENT.gpa],["Major GPA",STUDENT.majorGpa],["Semesters Left",3]].map(([l,v]) => (
-            <div key={l} style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 24, fontWeight: 800, color: GOLD }}>{v}</div>
-              <div style={{ fontSize: 9, opacity: .5, textTransform: "uppercase", letterSpacing: 1 }}>{l}</div>
+            <div key={l} style={{ textAlign:"center" }}>
+              <div style={{ fontSize:24, fontWeight:800, color:GOLD }}>{v}</div>
+              <div style={{ fontSize:9, opacity:.5, textTransform:"uppercase", letterSpacing:1 }}>{l}</div>
             </div>
           ))}
         </div>
       </div>
-      <div style={{ background: "#f9f7f4", borderRadius: 12, padding: "16px 20px", marginBottom: 12, border: "1px solid #ede8e0" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-          <span style={{ fontWeight: 700, fontSize: 14 }}>Unit Progress</span>
-          <span style={{ fontSize: 12, color: "#999" }}>{STUDENT.unitsEarned+STUDENT.unitsInProgress} / {STUDENT.unitsTotal}</span>
+      <div style={{ background:"#f9f7f4", borderRadius:12, padding:"16px 20px", marginBottom:12, border:"1px solid #ede8e0" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
+          <span style={{ fontWeight:700, fontSize:14 }}>Unit Progress</span>
+          <span style={{ fontSize:12, color:"#999" }}>{STUDENT.unitsEarned+STUDENT.unitsInProgress} / {STUDENT.unitsTotal}</span>
         </div>
         <Bar pct={pct} />
-        <div style={{ display: "flex", gap: 16, marginTop: 10, flexWrap: "wrap" }}>
+        <div style={{ display:"flex", gap:16, marginTop:10, flexWrap:"wrap" }}>
           {[["Earned",STUDENT.unitsEarned,C],["In Progress",STUDENT.unitsInProgress,"#e6a817"],["Still Needed",STUDENT.unitsNeeded,"#bbb"]].map(([l,v,col]) => (
-            <div key={l} style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <div style={{ width: 8, height: 8, borderRadius: 2, background: col }} />
-              <span style={{ fontSize: 12, color: "#555" }}><strong>{v}</strong> {l}</span>
+            <div key={l} style={{ display:"flex", alignItems:"center", gap:5 }}>
+              <div style={{ width:8, height:8, borderRadius:2, background:col }}/>
+              <span style={{ fontSize:12, color:"#555" }}><strong>{v}</strong> {l}</span>
             </div>
           ))}
         </div>
       </div>
-      <div style={{ background: "#f9f7f4", borderRadius: 12, padding: "16px 20px", marginBottom: 12, border: "1px solid #ede8e0" }}>
-        <div style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 15, marginBottom: 12 }}>Graduation Requirements</div>
+      <div style={{ background:"#f9f7f4", borderRadius:12, padding:"16px 20px", marginBottom:12, border:"1px solid #ede8e0" }}>
+        <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, fontSize:15, marginBottom:12 }}>Graduation Requirements</div>
         {REQUIREMENTS.map(r => (
-          <div key={r.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, paddingBottom: 9, marginBottom: 9, borderBottom: "1px solid #ede8e0" }}>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: NEAR_BLACK, marginBottom: 2 }}>{r.label}</div>
-              <div style={{ fontSize: 11, color: "#aaa" }}>{r.detail}</div>
-              {r.pct && <div style={{ marginTop: 5 }}><Bar pct={r.pct} color={r.status==="partial"?"#e6a817":C}/></div>}
+          <div key={r.label} style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:12, paddingBottom:9, marginBottom:9, borderBottom:"1px solid #ede8e0" }}>
+            <div style={{ flex:1 }}>
+              <div style={{ fontSize:13, fontWeight:600, color:NEAR_BLACK, marginBottom:2 }}>{r.label}</div>
+              <div style={{ fontSize:11, color:"#aaa" }}>{r.detail}</div>
+              {r.pct && <div style={{ marginTop:5 }}><Bar pct={r.pct} color={r.status==="partial"?"#e6a817":C}/></div>}
             </div>
-            <StatusBadge s={r.status} />
+            <StatusBadge s={r.status}/>
           </div>
         ))}
       </div>
-      <div style={{ background: "#f9f7f4", borderRadius: 12, padding: "16px 20px", border: "1px solid #ede8e0", overflowX: "auto" }}>
-        <div style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 15, marginBottom: 12 }}>Completed Coursework</div>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+      <div style={{ background:"#f9f7f4", borderRadius:12, padding:"16px 20px", border:"1px solid #ede8e0", overflowX:"auto" }}>
+        <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, fontSize:15, marginBottom:12 }}>Completed Coursework</div>
+        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
           <thead><tr>
             {["Term","Code","Title","Units","Grade"].map(h => (
               <th key={h} style={{ textAlign:"left", padding:"6px 10px", color:"#bbb", fontWeight:600, fontSize:10, textTransform:"uppercase", borderBottom:"1px solid #ede8e0" }}>{h}</th>
@@ -256,7 +275,6 @@ function StarsPrototype() {
   );
 }
 
-// ── Prototype 2: Exam Preview ─────────────────────────────────────────────────
 function ExamPrototype() {
   const calDays = [
     {label:"Wed",date:"May 6"},{label:"Thu",date:"May 7"},{label:"Fri",date:"May 8"},
@@ -265,7 +283,7 @@ function ExamPrototype() {
   return (
     <div>
       <div style={{ background:"#fef9e7", border:"1px solid #e6d77a", borderRadius:8, padding:"10px 16px", marginBottom:16, fontSize:12, color:"#6b5000" }}>
-        <strong>Source:</strong> USC Office of Academic Records &amp; Registrar — <em>arr.usc.edu/final-exam-schedule</em> &middot; Finals Week: May 6–13, 2026. Slots are derived automatically from each course's registered meeting days and start time.
+        <strong>Source:</strong> USC Office of Academic Records &amp; Registrar — <em>arr.usc.edu/final-exam-schedule</em> &middot; Finals Week: May 6–13, 2026.
       </div>
       <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:20 }}>
         {EXAMS.map(e => (
@@ -316,7 +334,6 @@ function ExamPrototype() {
   );
 }
 
-// ── Prototype 3: Course Validator ─────────────────────────────────────────────
 function ValidatorPrototype() {
   const [raw,setRaw] = useState("CSCI310\nBUAD425\nITP 460\nWRIT340\nCHEM105a");
   const results = [
@@ -393,7 +410,6 @@ function ValidatorPrototype() {
   );
 }
 
-// ── Prototype 4: What-If ──────────────────────────────────────────────────────
 function WhatIfPrototype() {
   const [scenario,setScenario] = useState("base");
   const plans = {
@@ -431,7 +447,7 @@ function WhatIfPrototype() {
           ))}
         </div>
         {scenario==="minor"  && <div style={{ fontSize:12, color:"#2a7a3a", background:"#f0fdf4", border:"1px solid #bbf7d0", borderRadius:8, padding:"9px 13px" }}>CS Minor adds approximately 2 required courses. Feasible given your CSCI background — system flags the unit overload in Fall 2026 automatically.</div>}
-        {scenario==="abroad" && <div style={{ fontSize:12, color:"#6d28d9", background:"#f5f3ff", border:"1px solid #ddd6fe", borderRadius:8, padding:"9px 13px" }}>One semester abroad pushes graduation to December 2027 under a standard load. System flags this and suggests unit adjustments to restore the May timeline.</div>}
+        {scenario==="abroad" && <div style={{ fontSize:12, color:"#6d28d9", background:"#f5f3ff", border:"1px solid #ddd6fe", borderRadius:8, padding:"9px 13px" }}>One semester abroad pushes graduation to December 2027 under a standard load. System flags this and suggests unit adjustments.</div>}
       </div>
       <div style={{ background:"#f9f7f4", borderRadius:12, border:"1px solid #ede8e0", padding:"18px 20px", marginBottom:14 }}>
         <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, fontSize:15, color:NEAR_BLACK, marginBottom:18 }}>Generated Path to Graduation</div>
@@ -458,149 +474,38 @@ function WhatIfPrototype() {
         <div style={{ marginTop:8, padding:"12px 16px", background:delayed?"#fef9e7":"#edf7ed", borderRadius:10, fontSize:12, color:delayed?"#7a5c00":"#2a6a2a" }}>
           {delayed
             ? "Graduation delayed to December 2027. Carrying additional units in Spring 2027 could restore the May timeline."
-            : "On track to graduate May 2027. No requirement conflicts detected across planned coursework."}
+            : "On track to graduate May 2027. No requirement conflicts detected."}
         </div>
-      </div>
-      <div style={{ background:"#f0ede8", borderRadius:10, padding:"14px 18px", fontSize:12, color:"#777", lineHeight:1.7 }}>
-        <strong style={{ color:"#333" }}>Under the hood:</strong> Parse STARS &rarr; map outstanding requirements &rarr; query USC Catalogue for eligible courses per remaining requirement &rarr; run a constraint-satisfaction solver to sequence courses across available semesters &rarr; re-solve on any scenario change. Advisors can override individual slots manually.
       </div>
     </div>
   );
 }
 
-// ── Technical Requirements section ───────────────────────────────────────────
-function TechStack() {
-  const layers = [
-    {
-      layer: "Frontend",
-      tech: "React + Tailwind CSS, hosted on Vercel",
-      rationale: "Component-based UI maps cleanly to the modular dashboard sections. Vercel gives zero-config deployment with USC SSO redirect support.",
-      phase: "Phase 1"
-    },
-    {
-      layer: "Backend / API",
-      tech: "FastAPI (Python)",
-      rationale: "Python is the natural choice given the ML-adjacent parsing work. FastAPI gives async performance, automatic OpenAPI docs, and minimal boilerplate — important for a student team moving fast.",
-      phase: "Phase 1"
-    },
-    {
-      layer: "STARS Parser",
-      tech: "PyMuPDF for extraction + GPT-4o with structured outputs",
-      rationale: "STARS PDFs are semi-structured — PyMuPDF handles layout extraction, GPT-4o interprets the semantic meaning of each field and maps it to a typed schema. Output is a validated Pydantic model used by all downstream modules.",
-      phase: "Phase 1"
-    },
-    {
-      layer: "Data — Course Catalogue",
-      tech: "Scraped from catalogue.usc.edu, cached in PostgreSQL",
-      rationale: "The Catalogue is publicly available and relatively stable. A nightly scrape keeps the prerequisites, D-clearance requirements, and degree program restrictions current without overloading USC infrastructure.",
-      phase: "Phase 1"
-    },
-    {
-      layer: "Data — Schedule of Classes",
-      tech: "Scraped from classes.usc.edu, refreshed each term",
-      rationale: "Provides term-specific section data: meeting days, times, seat availability, and instructor. Required for both the exam preview lookup and the course validator's live seat check.",
-      phase: "Phase 1"
-    },
-    {
-      layer: "Data — Exam Schedule",
-      tech: "Parsed from arr.usc.edu/final-exam-schedule, static per term",
-      rationale: "The Registrar publishes a deterministic mapping of class time + meeting day to exam slot each semester. We parse this once per term and store it as a lookup table.",
-      phase: "Phase 1"
-    },
-    {
-      layer: "Degree Requirement Engine",
-      tech: "Rule-based constraint system in Python",
-      rationale: "Encodes the BUAI (and eventually other major) requirement trees as traversable graphs. Checks student completion state against each node to produce the requirements dashboard and feed the What-If planner.",
-      phase: "Phase 2"
-    },
-    {
-      layer: "What-If Constraint Solver",
-      tech: "OR-Tools (Google) or custom CSP in Python",
-      rationale: "Given a student's outstanding requirements, available courses per term, and unit limits, the solver generates a feasible multi-semester sequence. Re-runs on scenario change. Hardest piece to get right — planned for Phase 3.",
-      phase: "Phase 3"
-    },
-    {
-      layer: "Authentication",
-      tech: "USC SSO / Shibboleth",
-      rationale: "Students authenticate via their existing USC credentials. No separate account creation. The SSO token is used to pre-fill the student ID, which the Registrar can optionally use to serve live STARS data rather than requiring a PDF upload.",
-      phase: "Phase 2"
-    },
-  ];
-
-  const phaseColor = { "Phase 1":["#e6f4ea","#1a7a3a"], "Phase 2":["#fef9e7","#7a5c00"], "Phase 3":["#fde8e8",C] };
-
-  return (
-    <section style={{ background: WHITE, padding: "80px 0" }}>
-      <div style={{ maxWidth: 820, margin: "0 auto", padding: "0 28px" }}>
-        <FadeIn>
-          <div style={{ fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: C, marginBottom: 12 }}>Technical Architecture</div>
-          <div style={{ fontFamily: "'Playfair Display',serif", fontWeight: 800, fontSize: 32, color: NEAR_BLACK, lineHeight: 1.2, marginBottom: 10 }}>
-            Stack &amp; Data Sources
-          </div>
-          <div style={{ fontSize: 14, color: "#777", lineHeight: 1.75, marginBottom: 40, maxWidth: 560 }}>
-            Each layer is chosen to minimize build time while keeping the system extensible. Phases 1 and 2 can ship without the constraint solver — the planner works in a simplified mode until Phase 3 is complete.
-          </div>
-        </FadeIn>
-
-        {/* Phase legend */}
-        <FadeIn delay={80}>
-          <div style={{ display:"flex", gap:10, marginBottom:24, flexWrap:"wrap" }}>
-            {[["Phase 1","Core MVP — ship first"],["Phase 2","Post-launch additions"],["Phase 3","Advanced features"]].map(([p,desc]) => {
-              const [bg,col] = phaseColor[p];
-              return (
-                <div key={p} style={{ display:"flex", alignItems:"center", gap:8, background:bg, borderRadius:8, padding:"6px 14px" }}>
-                  <div style={{ width:7, height:7, borderRadius:4, background:col }}/>
-                  <span style={{ fontSize:12, fontWeight:700, color:col }}>{p}</span>
-                  <span style={{ fontSize:11, color:col, opacity:.7 }}>— {desc}</span>
-                </div>
-              );
-            })}
-          </div>
-        </FadeIn>
-
-        <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-          {layers.map((l,i) => {
-            const [bg,col] = phaseColor[l.phase];
-            return (
-              <FadeIn key={l.layer} delay={40*i}>
-                <div style={{ background:"#f9f7f4", border:"1px solid #ede8e0", borderRadius:12, overflow:"hidden" }}>
-                  <div style={{ padding:"13px 20px", display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:12, borderBottom:"1px solid #ede8e0" }}>
-                    <div>
-                      <div style={{ fontWeight:700, fontSize:13, color:NEAR_BLACK, marginBottom:3 }}>{l.layer}</div>
-                      <div style={{ fontFamily:"monospace", fontSize:12, color:C }}>{l.tech}</div>
-                    </div>
-                    <span style={{ background:bg, color:col, fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:99, whiteSpace:"nowrap", marginTop:2 }}>{l.phase}</span>
-                  </div>
-                  <div style={{ padding:"10px 20px", fontSize:12, color:"#666", lineHeight:1.65 }}>{l.rationale}</div>
-                </div>
-              </FadeIn>
-            );
-          })}
-        </div>
-
-        {/* Tradeoffs */}
-        <FadeIn delay={100}>
-          <div style={{ marginTop:32, background:"#fdf3f3", borderLeft:`3px solid ${C}`, borderRadius:10, padding:"18px 22px" }}>
-            <div style={{ fontSize:10, fontWeight:800, color:C, letterSpacing:1.8, textTransform:"uppercase", marginBottom:8 }}>Key Tradeoffs for V1</div>
-            <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-              {[
-                ["PDF upload instead of live STARS API","Avoids the need for Registrar API access in Phase 1. Students download and upload their own STARS PDF — one extra step, but entirely self-contained."],
-                ["Scraped catalogue data vs. official API","USC does not publish a public Catalogue API. Nightly scraping introduces a small lag but keeps the system independent of internal IT timelines."],
-                ["Simplified What-If before Phase 3","The planner shows a rule-based sequence in Phase 1. The constraint solver (Phase 3) replaces this with an optimal, conflict-free schedule — but the simpler version is still useful and shippable fast."],
-                ["BUAI major only at launch","Encoding every major's requirement tree takes time. Launching with BUAI lets us validate the system with a real user base before scaling to other programs."],
-              ].map(([title,body]) => (
-                <div key={title} style={{ paddingBottom:8, borderBottom:"1px solid #f0e0e0" }}>
-                  <div style={{ fontWeight:700, fontSize:13, color:NEAR_BLACK, marginBottom:3 }}>{title}</div>
-                  <div style={{ fontSize:12, color:"#666", lineHeight:1.6 }}>{body}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </FadeIn>
-      </div>
-    </section>
-  );
-}
+// ── Per-section tech data ─────────────────────────────────────────────────────
+const TECH_STARS = [
+  { label:"PDF Extraction",  tech:"PyMuPDF",                       note:"Handles layout-aware text extraction from the STARS PDF, preserving the structure of requirement blocks and course rows." },
+  { label:"Parsing / NLP",   tech:"GPT-4o with structured outputs",note:"Interprets semi-structured STARS text semantically — maps requirement status codes, course flags, and GPA fields to a typed Pydantic schema." },
+  { label:"Backend",         tech:"FastAPI (Python)",               note:"Exposes a /parse endpoint that accepts a PDF upload and returns a validated JSON object consumed by the frontend dashboard." },
+  { label:"Frontend",        tech:"React",                         note:"Renders the requirement dashboard, unit progress bars, and course history table. State is derived entirely from the parsed STARS JSON." },
+];
+const TECH_EXAM = [
+  { label:"Data Source",     tech:"arr.usc.edu/final-exam-schedule", note:"The Registrar publishes a deterministic mapping of class meeting time + day to exam slot each semester. Parsed once per term and stored as a lookup table." },
+  { label:"Lookup Logic",    tech:"Python rule engine",             note:"Given a course's meeting days and start time, the engine applies the standard grid rules and then checks the exceptions table — no ML required, pure logic." },
+  { label:"Schedule Source", tech:"classes.usc.edu scrape",        note:"Meeting days and times are pulled from the Schedule of Classes for each course in the student's cart and fed into the lookup engine." },
+  { label:"Frontend",        tech:"React (inline in WebReg)",      note:"The finals calendar re-renders live as courses are added or removed from the shopping cart. No page reload required." },
+];
+const TECH_VALIDATOR = [
+  { label:"Prereq Data",     tech:"catalogue.usc.edu scrape",      note:"USC Course Catalogue is publicly available. Nightly scrape keeps prerequisite trees, co-requisite rules, and D-clearance flags current." },
+  { label:"Seat Availability",tech:"classes.usc.edu scrape",       note:"Real-time section data including enrollment counts and capacity. Refreshed frequently during registration periods." },
+  { label:"Eligibility Rules",tech:"Rule-based engine (Python)",   note:"Checks each course independently against the student's completed units, passed prerequisites, degree program, and D-clearance status. Returns a structured result per course." },
+  { label:"Frontend",        tech:"React overlay on WebReg grid",  note:"Ineligible courses rendered in a muted state with inline tooltip — no separate page or tool to open." },
+];
+const TECH_WHATIF = [
+  { label:"Requirement Graph",tech:"Python graph traversal",        note:"BUAI degree requirements encoded as a directed graph. Traversal identifies which nodes are satisfied, in-progress, or outstanding for a given student." },
+  { label:"Course Options",   tech:"catalogue.usc.edu",            note:"For each unsatisfied requirement node, the Catalogue is queried to find valid courses the student is eligible to take." },
+  { label:"Solver",           tech:"OR-Tools CSP (Phase 3)",       note:"Constraint-satisfaction solver sequences eligible courses across available semesters, respecting unit limits and prerequisites. Re-solves on any scenario change." },
+  { label:"Scenario Engine",  tech:"FastAPI + React state",        note:"Each scenario (major change, minor addition, abroad gap) modifies the constraint set and triggers a re-solve. Results stream back to the frontend in real time." },
+];
 
 // ── Main App ──────────────────────────────────────────────────────────────────
 export default function App() {
@@ -623,37 +528,27 @@ export default function App() {
       {/* Nav */}
       <div style={{
         position:"fixed", top:0, left:0, right:0, zIndex:100,
-        background: scrolled?"rgba(153,0,0,0.97)":"transparent",
-        backdropFilter: scrolled?"blur(8px)":"none",
+        background:scrolled?"rgba(153,0,0,0.97)":"transparent",
+        backdropFilter:scrolled?"blur(8px)":"none",
         transition:"background 0.3s ease, box-shadow 0.3s ease",
-        boxShadow: scrolled?"0 1px 12px rgba(0,0,0,0.2)":"none",
+        boxShadow:scrolled?"0 1px 12px rgba(0,0,0,0.2)":"none",
         height:56, display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 32px"
       }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-          <div style={{ background:GOLD, color:C, fontWeight:900, fontSize:13, padding:"3px 8px", borderRadius:5, letterSpacing:.5 }}>USC</div>
+          <div style={{ background:GOLD, color:C, fontWeight:900, fontSize:13, padding:"3px 8px", borderRadius:5 }}>USC</div>
           <span style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, fontSize:16, color:"#fff" }}>TrojanReg</span>
         </div>
-        <span style={{ fontSize:11, color:"rgba(255,255,255,0.5)", letterSpacing:.3 }}>BUAI Builder Hub &mdash; Profs. Gupta &amp; Javanmard</span>
+        <span style={{ fontSize:11, color:"rgba(255,255,255,0.5)" }}>BUAI Builder Hub &mdash; Profs. Gupta &amp; Javanmard</span>
       </div>
 
       {/* Hero */}
-      <div style={{
-        minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center",
-        background:`linear-gradient(160deg,${DARK_C} 0%,${C} 60%,#c41a1a 100%)`,
-        padding:"100px 28px 80px", textAlign:"center", position:"relative", overflow:"hidden"
-      }}>
+      <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:`linear-gradient(160deg,${DARK_C} 0%,${C} 60%,#c41a1a 100%)`, padding:"100px 28px 80px", textAlign:"center", position:"relative", overflow:"hidden" }}>
         <div style={{ position:"absolute", width:600, height:600, borderRadius:"50%", border:"1px solid rgba(255,204,0,0.07)", top:"50%", left:"50%", transform:"translate(-50%,-50%)", pointerEvents:"none" }}/>
         <div style={{ position:"absolute", width:1000, height:1000, borderRadius:"50%", border:"1px solid rgba(255,204,0,0.03)", top:"50%", left:"50%", transform:"translate(-50%,-50%)", pointerEvents:"none" }}/>
         <div style={{ maxWidth:680, position:"relative", zIndex:1 }}>
-          <div style={{ display:"inline-block", background:"rgba(255,204,0,0.12)", border:"1px solid rgba(255,204,0,0.25)", borderRadius:99, padding:"5px 18px", fontSize:11, color:GOLD, letterSpacing:2, textTransform:"uppercase", marginBottom:28 }}>
-            Thank you for shortlisting me
-          </div>
-          <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:800, fontSize:52, lineHeight:1.1, color:"#fff", marginBottom:20 }}>
-            Hi, Profs. Gupta<br />&amp; Javanmard.
-          </div>
-          <div style={{ fontFamily:"'Playfair Display',serif", fontStyle:"italic", fontSize:22, color:"rgba(255,255,255,0.6)", marginBottom:32 }}>
-            Let's get into this.
-          </div>
+          <div style={{ display:"inline-block", background:"rgba(255,204,0,0.12)", border:"1px solid rgba(255,204,0,0.25)", borderRadius:99, padding:"5px 18px", fontSize:11, color:GOLD, letterSpacing:2, textTransform:"uppercase", marginBottom:28 }}>Thank you for shortlisting me</div>
+          <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:800, fontSize:52, lineHeight:1.1, color:"#fff", marginBottom:20 }}>Hi, Profs. Vishal<br />&amp; Javanmard.</div>
+          <div style={{ fontFamily:"'Playfair Display',serif", fontStyle:"italic", fontSize:22, color:"rgba(255,255,255,0.6)", marginBottom:32 }}>Let's get into this.</div>
           <div style={{ fontSize:15, color:"rgba(255,255,255,0.68)", lineHeight:1.85, marginBottom:52, maxWidth:520, margin:"0 auto 52px" }}>
             I reviewed the project brief, thought through the registration experience from a student's perspective, and put together a working proposal for TrojanReg — covering all four pain points you identified, with working prototypes where possible and a clear technical plan throughout.
           </div>
@@ -662,24 +557,22 @@ export default function App() {
         </div>
       </div>
 
-      {/* Overview — dark */}
+      {/* Overview */}
       <div style={{ background:NEAR_BLACK, padding:"80px 28px" }}>
         <div style={{ maxWidth:820, margin:"0 auto" }}>
           <FadeIn>
             <div style={{ fontSize:10, letterSpacing:2.5, textTransform:"uppercase", color:GOLD, marginBottom:16 }}>The Finding</div>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, fontSize:32, color:"#fff", lineHeight:1.3, marginBottom:16 }}>
-              Four distinct pain points. Each solvable with a targeted intervention.
-            </div>
+            <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, fontSize:32, color:"#fff", lineHeight:1.3, marginBottom:16 }}>Four distinct pain points. Each solvable with a targeted intervention.</div>
             <div style={{ fontSize:14, color:"rgba(255,255,255,0.5)", lineHeight:1.8, marginBottom:48, maxWidth:560 }}>
-              Rather than one monolithic tool, each solution slots into a system students already use — STARS, WebReg, and Advise USC — so adoption friction is near zero. Implementation is sequenced by complexity: the first two are shippable in weeks; the last arrives once the foundation is solid.
+              Each solution slots into a system students already use — STARS, WebReg, and Advise USC. Implementation is sequenced by complexity: the first two are shippable in weeks; the last arrives once the foundation is solid.
             </div>
           </FadeIn>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             {[
-              ["01","STARS Analysis",    "Parsing a degree report shouldn't need a decoder ring.",           "Sits inside Advise USC", "Very Easy",  "#22c55e"],
-              ["02","Exam Preview",      "Finals conflicts are invisible at the moment you register.",       "New tab in WebReg",      "Easy",       "#22c55e"],
-              ["03","Course Validator",  "One invalid course rejecting an entire batch costs students seats.","Inline in WebReg grid",  "Medium",     "#f59e0b"],
-              ["04","What-If Planner",   "Scenario planning shouldn't require a human appointment.",         "Sits inside Advise USC", "Complex",    C        ],
+              ["01","STARS Analysis",    "Parsing a degree report shouldn't need a decoder ring.",            "Sits inside Advise USC",  "Very Easy",  "#22c55e"],
+              ["02","Exam Preview",      "Finals conflicts are invisible at the moment you register.",        "New tab in WebReg",       "Easy",       "#22c55e"],
+              ["03","Course Validator",  "One invalid course rejecting an entire batch costs students seats.","Inline in WebReg grid",   "Medium",     "#f59e0b"],
+              ["04","What-If Planner",   "Scenario planning shouldn't require a human appointment.",          "Sits inside Advise USC",  "Complex",    C        ],
             ].map(([num,title,desc,tag,diff,dotCol],i) => (
               <FadeIn key={num} delay={80*i}>
                 <div style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:12, padding:"20px 22px", height:"100%" }}>
@@ -687,7 +580,7 @@ export default function App() {
                   <div style={{ fontWeight:700, fontSize:14, color:"#fff", marginBottom:6 }}>{title}</div>
                   <div style={{ fontSize:12, color:"rgba(255,255,255,0.4)", lineHeight:1.65, marginBottom:14 }}>{desc}</div>
                   <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-                    <div style={{ fontSize:10, background:"rgba(255,204,0,0.08)", border:"1px solid rgba(255,204,0,0.15)", borderRadius:99, padding:"3px 10px", color:GOLD, letterSpacing:.5 }}>{tag}</div>
+                    <div style={{ fontSize:10, background:"rgba(255,204,0,0.08)", border:"1px solid rgba(255,204,0,0.15)", borderRadius:99, padding:"3px 10px", color:GOLD }}>{tag}</div>
                     <div style={{ display:"flex", alignItems:"center", gap:5, background:"rgba(255,255,255,0.06)", borderRadius:99, padding:"3px 10px" }}>
                       <div style={{ width:6, height:6, borderRadius:3, background:dotCol }}/>
                       <span style={{ fontSize:10, color:"rgba(255,255,255,0.5)" }}>{diff}</span>
@@ -702,11 +595,11 @@ export default function App() {
 
       <Divider/>
 
-      {/* Sections */}
       <SectionBlock number="01" title="STARS Analysis" difficulty="Very Easy" phase="Ship in Phase 1"
         problem="Students manually interpret a dense, color-coded STARS PDF to understand their degree progress — often missing sub-requirements, GPA thresholds, or the distinction between 'in progress' and 'satisfied.' Advising appointments are frequently spent just establishing shared ground on where the student stands."
         approach="Parse the uploaded STARS PDF using an LLM-assisted extraction pipeline, then render a clean interactive dashboard: unit progress, GPA, every graduation requirement color-coded by status, and a plain-English summary of what still needs to be done."
         integration="Advise USC — this view lives inside the Advise USC portal so advisors and students see identical, real-time data during appointments, turning discovery time into decision-making time"
+        miniTech={TECH_STARS}
         bg={WHITE}>
         <StarsPrototype/>
       </SectionBlock>
@@ -715,8 +608,9 @@ export default function App() {
 
       <SectionBlock number="02" title="Exam Preview" difficulty="Easy" phase="Ship in Phase 1"
         problem="Students who strategically stack classes on two days often create a grueling finals schedule without realizing it. This conflict is invisible during registration — by the time they discover it, adjusting is difficult."
-        approach="For any proposed course list, automatically derive each course's final exam slot from the Registrar's published grid: meeting days + class start time map deterministically to an exam slot, with the published exception table applied where relevant. No manual input required."
+        approach="For any proposed course list, automatically derive each course's final exam slot from the Registrar's published grid: meeting days + class start time map deterministically to an exam slot, with the published exception table applied where relevant."
         integration="WebReg — an 'Exam Preview' tab inside WebReg refreshes the finals calendar live as courses are added to or removed from the shopping cart"
+        miniTech={TECH_EXAM}
         bg={CREAM}>
         <ExamPrototype/>
       </SectionBlock>
@@ -724,9 +618,10 @@ export default function App() {
       <Divider/>
 
       <SectionBlock number="03" title="Course Validator" difficulty="Medium" phase="Phase 2 — after core is stable"
-        problem="WebReg's all-or-nothing batch rejection means a single invalid course can cause a student to lose seats in every course they were trying to register for simultaneously. Students often don't know which course caused the failure or why — and the window to fix it is narrow."
-        approach="Validate each course independently against the student's profile before they submit: prerequisites, co-requisites, D-clearance requirements, seat availability, and degree-program eligibility — flagged per course. Students can remove the problematic course and register the rest immediately."
+        problem="WebReg's all-or-nothing batch rejection means a single invalid course can cause a student to lose seats in every course they were trying to register for simultaneously. Students often don't know which course caused the failure or why."
+        approach="Validate each course independently against the student's profile before they submit: prerequisites, co-requisites, D-clearance requirements, seat availability, and degree-program eligibility — flagged per course, not per batch."
         integration="WebReg — ineligible or flagged courses appear in a visually distinct, muted state directly in the registration grid, with an inline tooltip explaining the specific issue"
+        miniTech={TECH_VALIDATOR}
         bg={WHITE}>
         <ValidatorPrototype/>
       </SectionBlock>
@@ -735,16 +630,12 @@ export default function App() {
 
       <SectionBlock number="04" title="What-If Planner" difficulty="Complex" phase="Phase 3 — once foundation is complete"
         problem="Exploring a major change, adding a minor, or planning around a study abroad semester requires scheduling a human advising appointment. Advisor capacity is a real constraint — students can't easily run through scenarios before they're ready to commit."
-        approach="Let students simulate any academic scenario against their parsed STARS data. The system maps remaining requirements, layers in new constraints, and generates a revised semester-by-semester graduation path automatically — using a constraint-satisfaction solver that re-runs on any change."
+        approach="Let students simulate any academic scenario against their parsed STARS data. The system maps remaining requirements, layers in new constraints, and generates a revised semester-by-semester graduation path using a constraint-satisfaction solver that re-runs on any change."
         integration="Advise USC — students arrive at appointments with a pre-generated scenario plan, allowing advisors to focus on refining and approving rather than building from scratch"
+        miniTech={TECH_WHATIF}
         bg={CREAM}>
         <WhatIfPrototype/>
       </SectionBlock>
-
-      <Divider/>
-
-      {/* Tech Stack */}
-      <TechStack/>
 
       <Divider/>
 
@@ -753,20 +644,18 @@ export default function App() {
         <div style={{ maxWidth:820, margin:"0 auto" }}>
           <FadeIn>
             <div style={{ fontSize:10, letterSpacing:2.5, textTransform:"uppercase", color:GOLD, marginBottom:14 }}>Where I fit</div>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, fontSize:32, color:"#fff", lineHeight:1.3, marginBottom:16 }}>
-              I'm happy to contribute across all of it.
-            </div>
+            <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, fontSize:32, color:"#fff", lineHeight:1.3, marginBottom:16 }}>I'm happy to contribute across all of it.</div>
             <div style={{ fontSize:14, color:"rgba(255,255,255,0.5)", lineHeight:1.8, marginBottom:36, maxWidth:600 }}>
-              I have production-level experience across the full stack — from LLM-based document extraction and backend API design through to deployed, user-facing web applications. I don't have a preference for one layer over another; I'd rather go wherever is most useful to the team.
+              I have production-level experience across the full stack — from LLM-based document extraction and backend API design through to deployed, user-facing web applications. I'd rather go wherever is most useful to the team.
             </div>
           </FadeIn>
           <FadeIn delay={80}>
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:24 }}>
               {[
-                ["AI & Extraction Layer", "Built DocExtract — an AI document extraction platform with 15+ pilots across 8 industries. The STARS parser is this exact problem: semi-structured PDF in, typed structured data out."],
-                ["Backend Development", "Production Python services using FastAPI and Django, deployed on AWS. I've built and maintained agentic backend systems at Refundly and across my own ventures."],
-                ["Frontend & Product", "I build user-facing interfaces and think in terms of the full user experience — not just the API surface. The prototypes on this page are a working example of that."],
-                ["Deployment & Infrastructure", "AWS deployment, environment management, CI/CD pipelines. I know how to take something from a working prototype to a running, maintained service."],
+                ["AI & Extraction Layer","Built DocExtract — an AI document extraction platform with 15+ pilots across 8 industries. The STARS parser is this exact problem: semi-structured PDF in, typed structured data out."],
+                ["Backend Development","Production Python services using FastAPI and Django, deployed on AWS. Built and maintained agentic backend systems at Refundly and across my own ventures."],
+                ["Frontend & Product","Build user-facing interfaces and think in terms of the full user experience. The prototypes on this page are a working example of that approach."],
+                ["Deployment & Infrastructure","AWS deployment, environment management, CI/CD pipelines. Know how to take something from a working prototype to a running, maintained service."],
               ].map(([title,body]) => (
                 <div key={title} style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:12, padding:"20px 22px" }}>
                   <div style={{ fontWeight:700, fontSize:13, color:"#fff", marginBottom:8 }}>{title}</div>
@@ -777,7 +666,7 @@ export default function App() {
           </FadeIn>
           <FadeIn delay={140}>
             <div style={{ background:"rgba(255,204,0,0.06)", border:"1px solid rgba(255,204,0,0.15)", borderRadius:12, padding:"18px 22px", fontSize:13, color:"rgba(255,255,255,0.55)", lineHeight:1.75 }}>
-              If you'd like me to name one starting point: the STARS extraction layer is where I have the most directly applicable prior work, and getting that right is what makes everything else possible. But I'm genuinely glad to work wherever the team needs coverage.
+              If a starting point is needed: the STARS extraction layer is where I have the most directly applicable prior work, and getting that right is what makes everything else possible — but I'm genuinely glad to work wherever the team needs coverage.
             </div>
           </FadeIn>
         </div>
@@ -787,11 +676,9 @@ export default function App() {
       <section style={{ background:`linear-gradient(160deg,${DARK_C},${C})`, padding:"80px 28px", textAlign:"center" }}>
         <div style={{ maxWidth:560, margin:"0 auto" }}>
           <FadeIn>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:800, fontSize:38, color:"#fff", lineHeight:1.2, marginBottom:16 }}>
-              Looking forward to hopefully working with you.
-            </div>
+            <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:800, fontSize:38, color:"#fff", lineHeight:1.2, marginBottom:16 }}>Looking forward to hopefully working with you.</div>
             <div style={{ fontSize:15, color:"rgba(255,255,255,0.6)", lineHeight:1.8, marginBottom:44 }}>
-              If you have any questions about this proposal or would like to discuss any section in more depth before the interview, please don't hesitate to reach out.
+              If you have any questions about this proposal or would like to discuss any section before the interview, please don't hesitate to reach out.
             </div>
           </FadeIn>
           <FadeIn delay={100}>
@@ -801,7 +688,7 @@ export default function App() {
             </div>
           </FadeIn>
           <FadeIn delay={180}>
-            <div style={{ marginTop:48, fontSize:11, color:"rgba(255,255,255,0.28)", letterSpacing:.5 }}>
+            <div style={{ marginTop:48, fontSize:11, color:"rgba(255,255,255,0.28)" }}>
               Avi Chopra &nbsp;&middot;&nbsp; USC Class of 2027 &nbsp;&middot;&nbsp; BUAI Builder Hub
             </div>
           </FadeIn>
